@@ -1,8 +1,6 @@
 function showPage(id){
 
-  document.querySelectorAll(
-    '.login-page,.servers-page,.dashboard-page,.transcript-page'
-  ).forEach(page=>{
+  document.querySelectorAll('.page').forEach(page=>{
     page.classList.add('hidden');
   });
 
