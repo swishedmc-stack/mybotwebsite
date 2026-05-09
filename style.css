@@ -4,9 +4,10 @@
 
 body{
   margin:0;
-  background:#12131d;
+  background:#0c0f1d;
   color:white;
-  font-family:Arial;
+  font-family:Inter,Arial,sans-serif;
+  overflow-x:hidden;
 }
 
 .hidden{
@@ -17,87 +18,135 @@ body{
   min-height:100vh;
   display:grid;
   place-items:center;
-  background:radial-gradient(circle at bottom,#312a86,#171824 45%);
+  background:
+  radial-gradient(circle at top,#5c54ff55,transparent 30%),
+  radial-gradient(circle at bottom,#302a8655,transparent 30%),
+  #0b0d18;
 }
 
 .oauth-card{
-  width:420px;
-  background:#2a2d3a;
-  border-radius:12px;
-  padding:30px;
+  width:460px;
+  background:#171a2a;
+  border:1px solid #2a2f49;
+  border-radius:20px;
+  padding:36px;
+  box-shadow:0 0 80px #00000080;
 }
 
 .oauth-icons{
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:20px;
+  gap:24px;
+  margin-bottom:20px;
 }
 
-.app-logo,.user-logo{
-  width:70px;
-  height:70px;
+.app-logo,
+.user-logo{
+  width:82px;
+  height:82px;
   border-radius:50%;
-  background:#5865f2;
+  background:linear-gradient(135deg,#5865f2,#6f7cff);
+  box-shadow:0 0 30px #5865f280;
 }
 
 .dots{
-  color:#666;
+  color:#555d7c;
+  font-size:22px;
+}
+
+.oauth-card h1{
+  font-size:42px;
+  margin-bottom:5px;
+}
+
+.oauth-card p{
+  color:#b6bdd7;
 }
 
 .permissions{
-  margin:20px 0;
+  margin:24px 0;
+  background:#1d2236;
+  border:1px solid #2e3554;
+  border-radius:14px;
+  padding:20px;
+}
+
+.permissions div{
+  margin:12px 0;
 }
 
 .oauth-actions{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:10px;
+  gap:12px;
 }
 
-.primary,.secondary{
+.primary,
+.secondary{
   border:0;
-  padding:14px;
-  border-radius:8px;
+  border-radius:12px;
+  padding:15px;
+  font-weight:700;
   color:white;
+  transition:.2s;
 }
 
 .primary{
   background:#5865f2;
 }
 
+.primary:hover{
+  background:#6a75ff;
+  transform:translateY(-2px);
+}
+
 .secondary{
-  background:#444857;
+  background:#272c40;
 }
 
 .sidebar{
   position:fixed;
-  width:260px;
   top:0;
   left:0;
   bottom:0;
-  background:#181a24;
-  padding:20px;
+  width:280px;
+  background:#111423;
+  border-right:1px solid #232844;
+  padding:24px 18px;
+}
+
+.sidebar h2{
+  font-size:28px;
+  margin-bottom:30px;
 }
 
 .nav{
   width:100%;
   background:transparent;
   border:0;
-  color:white;
+  color:#c5cbee;
   text-align:left;
-  padding:14px;
-  margin:5px 0;
-  border-radius:8px;
+  padding:16px;
+  border-radius:12px;
+  margin:8px 0;
+  font-size:16px;
+  transition:.2s;
+}
+
+.nav:hover{
+  background:#1c2136;
 }
 
 .nav.active{
-  background:#2a2d3a;
+  background:#1f2540;
+  border-left:4px solid #6f7cff;
+  color:white;
 }
 
 .dash-main{
   margin-left:280px;
-  padding:40px;
+  padding:50px;
 }
 
 .dash-section{
@@ -108,17 +157,60 @@ body{
   display:block;
 }
 
+.dash-main h1{
+  font-size:48px;
+  margin-bottom:30px;
+}
+
 .card-grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:20px;
+  gap:24px;
 }
 
-.card,.panel,.security-card,.form-card,.transcript{
-  background:#1e2130;
-  border:1px solid #2c3147;
-  border-radius:12px;
-  padding:20px;
+.card{
+  background:
+  linear-gradient(180deg,#1b2034,#171b2b);
+  border:1px solid #2b3250;
+  border-radius:18px;
+  padding:28px;
+  min-height:180px;
+  transition:.25s;
+  position:relative;
+  overflow:hidden;
+}
+
+.card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at top,#5865f230,transparent 50%);
+}
+
+.card:hover{
+  transform:translateY(-6px);
+  border-color:#5865f2;
+}
+
+.card h3{
+  font-size:30px;
+  margin-bottom:12px;
+}
+
+.card p{
+  color:#9ca6d4;
+  font-size:17px;
+}
+
+.panel,
+.security-card,
+.form-card,
+.transcript{
+  background:#171b2c;
+  border:1px solid #2a3150;
+  border-radius:18px;
+  padding:24px;
+  margin:18px 0;
 }
 
 .security-grid{
@@ -127,18 +219,16 @@ body{
   gap:20px;
 }
 
-input,textarea,select{
+input,
+textarea,
+select{
   width:100%;
-  background:#2a2d3a;
-  border:1px solid #3c425d;
+  background:#20253b;
+  border:1px solid #323b5f;
   color:white;
-  padding:14px;
-  border-radius:8px;
-  margin:10px 0;
-}
-
-button{
-  cursor:pointer;
+  padding:15px;
+  border-radius:12px;
+  margin:12px 0;
 }
 
 .form-card button{
@@ -146,8 +236,14 @@ button{
   background:#5865f2;
   border:0;
   color:white;
-  padding:14px;
-  border-radius:8px;
+  padding:16px;
+  border-radius:12px;
+  font-weight:700;
+  margin-top:10px;
+}
+
+button{
+  cursor:pointer;
 }
 
 @media(max-width:900px){
@@ -159,10 +255,15 @@ button{
 
   .dash-main{
     margin:0;
+    padding:25px;
   }
 
   .card-grid,
   .security-grid{
     grid-template-columns:1fr;
+  }
+
+  .oauth-card{
+    width:92%;
   }
 }
