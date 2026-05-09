@@ -9,131 +9,167 @@
 <body>
 
 <div id="loginPage" class="page login-page">
-  <div class="oauth-card">
-    <div class="oauth-icons">
-      <div class="app-logo">T</div>
-      <div class="dots">•••</div>
-      <div class="user-logo"></div>
+  <div class="login-card">
+    <div class="login-icons">
+      <div class="logo">T</div>
+      <span>•••</span>
+      <div class="user-preview" id="loginAvatar"></div>
     </div>
 
     <h1>Private Bot Dashboard</h1>
     <p>wants to access your Discord account</p>
 
-    <div class="permissions">
-      <div>✅ Access your Discord username</div>
-      <div>✅ View your servers</div>
-      <div>✅ Manage bot systems</div>
+    <div class="permission-box">
+      <div>✅ Access your username, avatar, and banner</div>
+      <div>✅ Know what servers you're in</div>
+      <div>✅ Manage private bot dashboards</div>
+      <div class="disabled">✖ Solve a mystery with Scooby and the gang</div>
     </div>
 
-    <div class="oauth-actions">
-      <button class="secondary">Cancel</button>
-      <button class="primary" onclick="showPage('dashboardPage')">Authorize</button>
-    </div>
+    <button class="login-btn" onclick="loginWithDiscord()">Authorize with Discord</button>
   </div>
 </div>
 
-<div id="dashboardPage" class="page hidden">
+<div id="serversPage" class="page hidden">
+  <header class="topbar">
+    <div class="brand"><div class="mini-logo">T</div><b>PRIVATE DASHBOARD</b></div>
+    <div class="user-pill"><img id="userAvatar"><span id="userName">User</span><button onclick="logout()">Logout</button></div>
+  </header>
+
+  <main class="server-page">
+    <h1>Select a Server</h1>
+    <p>Manage servers where the bot is installed or invite it to a new server.</p>
+    <div id="serverGrid" class="server-grid"></div>
+  </main>
+</div>
+
+<div id="dashboardPage" class="page dashboard-page hidden">
+  <header class="topbar fixed">
+    <div class="brand"><div class="mini-logo">T</div><b>PRIVATE DASHBOARD</b></div>
+    <div class="user-pill"><img id="dashAvatar"><span id="dashName">User</span><button onclick="showPage('serversPage')">Switch</button></div>
+  </header>
 
   <aside class="sidebar">
-    <h2>PRIVATE DASHBOARD</h2>
+    <div class="server-box">
+      <div id="selectedIcon" class="server-icon">🍩</div>
+      <span id="selectedServer">Server Dashboard</span>
+    </div>
 
     <button class="nav active" data-page="home">🏠 Home</button>
-    <button class="nav" data-page="tickets">🎟 Tickets</button>
+    <button class="nav" data-page="tickets">🎟 Ticket Panels</button>
+    <button class="nav" data-page="management">📦 Ticket Management</button>
     <button class="nav" data-page="security">🛡 Security</button>
     <button class="nav" data-page="giveaways">🎉 Giveaways</button>
     <button class="nav" data-page="applications">📝 Applications</button>
-    <button class="nav" data-page="transcripts">📄 Transcripts</button>
+    <button class="nav" data-page="settings">⚙ Settings</button>
   </aside>
 
   <main class="dash-main">
-
-    <section class="dash-section active" id="home">
-      <h1>Dashboard</h1>
-
-      <div class="card-grid">
-        <div class="card">
-          <h3>Tickets</h3>
-          <p>Create and manage ticket panels</p>
+    <section id="home" class="dash-section active">
+      <div class="hero-row">
+        <div class="server-icon big">🍩</div>
+        <div>
+          <small>DASHBOARD</small>
+          <h1 id="homeTitle">Server Dashboard</h1>
         </div>
+      </div>
 
-        <div class="card">
-          <h3>Security</h3>
-          <p>Protect your Discord server</p>
-        </div>
+      <h2>Quick Actions</h2>
+      <div class="quick-grid">
+        <div class="quick-card">📘<h3>Documentation</h3><p>Guides and tutorials</p></div>
+        <div class="quick-card">💬<h3>Support Server</h3><p>Get help from the team</p></div>
+        <div class="quick-card">🎛<h3>Bot Settings</h3><p>Configure the bot</p></div>
+        <div class="quick-card">📊<h3>Analytics</h3><p>View server activity</p></div>
+      </div>
 
-        <div class="card">
-          <h3>Giveaways</h3>
-          <p>Create giveaways instantly</p>
-        </div>
-
-        <div class="card">
-          <h3>Applications</h3>
-          <p>Create application systems</p>
-        </div>
+      <h2>Modules</h2>
+      <div class="module-grid">
+        <div class="module" data-go="tickets">🎟<h3>Tickets</h3><p>Create and manage ticket panels</p></div>
+        <div class="module" data-go="management">📦<h3>Ticket Management</h3><p>Review tickets and transcripts</p></div>
+        <div class="module" data-go="security">🛡<h3>Security</h3><p>Anti-nuke and whitelist settings</p></div>
+        <div class="module" data-go="giveaways">🎉<h3>Giveaways</h3><p>Create and manage giveaways</p></div>
+        <div class="module" data-go="applications">📝<h3>Applications</h3><p>Application panels and submissions</p></div>
+        <div class="module" data-go="settings">⚙<h3>Settings</h3><p>Channels, roles, and logs</p></div>
       </div>
     </section>
 
-    <section class="dash-section" id="tickets">
+    <section id="tickets" class="dash-section">
       <h1>Ticket Panels</h1>
+      <p class="muted">Ticket panels allow users to interact with the ticket system.</p>
 
-      <div class="panel">
-        <h3>Giveaway Claim</h3>
-        <p>Enabled</p>
-      </div>
+      <button class="create-panel">Create New Panel <span>＋</span></button>
 
-      <div class="panel">
-        <h3>Spawner Purchase</h3>
-        <p>Enabled</p>
+      <div class="panel-card">
+        <div class="panel-header"><h2>Your Ticket Panels</h2><b>7/25</b></div>
+        <input class="search" placeholder="Search For Panels">
+
+        <div class="panel-row selected"><div>🎁 <b>Giveaway Claim</b><small>🟢 GIVEAWAY TICKETS</small></div><span>Enabled</span><b>7</b><button>🗑</button><button>⌄</button></div>
+        <div class="panel-row"><div>⛏ <b>Building</b><small>⚫ BASE SERVICE TICKETS</small></div><span>Enabled</span><b>15</b><button>🗑</button><button>⌄</button></div>
+        <div class="panel-row"><div>💸 <b>Buy Spawner</b><small>🟠 SPAWNER BUY</small></div><span>Enabled</span><b>3</b><button>🗑</button><button>⌄</button></div>
+        <div class="panel-row"><div>💵 <b>Sell Spawners</b><small>🟢 SPAWNER SELL</small></div><span>Enabled</span><b>13</b><button>🗑</button><button>⌄</button></div>
       </div>
     </section>
 
-    <section class="dash-section" id="security">
+    <section id="management" class="dash-section">
+      <h1>Ticket Management</h1>
+
+      <div class="ticket-layout">
+        <div class="discord-card">
+          <p class="mention">@BurKrepMan, @Spawner Access</p>
+          <div class="embed blue">
+            <h3>Ticket Created</h3>
+            <p>Welcome @BurKrepMan, thank you for reaching out to our support team!</p>
+            <div class="answers">
+              <b>1. What is your IGN</b><span>sb_gt0lz_08_14</span>
+              <b>2. What type of spawner?</b><span>Skelly</span>
+              <b>3. How many?</b><span>64</span>
+            </div>
+          </div>
+          <button>🔒 Close</button><button>🙌 Claim</button>
+          <p><b>BurKrepMan</b> I changed my mind sorry guys have a great day and sorry for the trouble!</p>
+        </div>
+
+        <div class="discord-card">
+          <div class="embed cyan">
+            <h3>Ticket Closed</h3>
+            <p>@AngryCharlie131 closed a ticket.</p>
+            <b>Close Information</b>
+            <p>Ticket Name: buy-spawner-burkrepman<br>Ticket ID: bPxaEp6ryuCl6uuM7GX<br>Reason: Didn't wanna buy anymore</p>
+            <b>Creator Information</b>
+            <p>Creator: &lt;@691703621988909066&gt;<br>Creator Username: @burkrepman<br>Creator ID: 691703621988909066</p>
+          </div>
+          <button onclick="showTranscript()">View Transcript ↗</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="security" class="dash-section">
       <h1>Security</h1>
+      <p class="muted">Choose punishments and limits for each protection.</p>
 
       <div class="security-grid">
-        <div class="security-card">
-          <h3>Ban Protection</h3>
-          <select>
-            <option>Ban</option>
-            <option>Kick</option>
-            <option>Timeout</option>
-          </select>
-        </div>
-
-        <div class="security-card">
-          <h3>Role Protection</h3>
-          <select>
-            <option>Ban</option>
-            <option>Kick</option>
-            <option>Timeout</option>
-          </select>
-        </div>
-
-        <div class="security-card">
-          <h3>Channel Protection</h3>
-          <select>
-            <option>Ban</option>
-            <option>Kick</option>
-            <option>Timeout</option>
-          </select>
-        </div>
+        <div class="security-card"><h3>Banning Members</h3><select><option>Ban</option><option>Kick</option><option>Timeout</option></select><input value="1"><button>Save</button></div>
+        <div class="security-card"><h3>Kicking Members</h3><select><option>Timeout</option><option>Kick</option><option>Ban</option></select><input value="2"><button>Save</button></div>
+        <div class="security-card"><h3>Deleting Roles</h3><select><option>Ban</option><option>Kick</option><option>Timeout</option></select><input value="1"><button>Save</button></div>
+        <div class="security-card"><h3>Creating Roles</h3><select><option>Timeout</option><option>Kick</option><option>Ban</option></select><input value="3"><button>Save</button></div>
+        <div class="security-card"><h3>Deleting Channels</h3><select><option>Ban</option><option>Kick</option><option>Timeout</option></select><input value="1"><button>Save</button></div>
+        <div class="security-card"><h3>Adding Bots</h3><select><option>Ban</option><option>Kick</option><option>Timeout</option></select><input value="1"><button>Save</button></div>
       </div>
     </section>
 
-    <section class="dash-section" id="giveaways">
-      <h1>Giveaways</h1>
-
+    <section id="giveaways" class="dash-section">
+      <h1>Giveaway Manager</h1>
       <div class="form-card">
         <input placeholder="Prize">
-        <input placeholder="Duration">
+        <input placeholder="Duration, example: 1h">
         <input placeholder="Winners">
+        <textarea placeholder="Description"></textarea>
         <button>Create Giveaway</button>
       </div>
     </section>
 
-    <section class="dash-section" id="applications">
+    <section id="applications" class="dash-section">
       <h1>Applications</h1>
-
       <div class="form-card">
         <input placeholder="Application Name">
         <textarea placeholder="Questions"></textarea>
@@ -141,15 +177,22 @@
       </div>
     </section>
 
-    <section class="dash-section" id="transcripts">
-      <h1>Transcripts</h1>
-
-      <div class="transcript">
-        <h3># buy-spawner-ticket</h3>
-        <p>User changed their mind.</p>
+    <section id="settings" class="dash-section">
+      <h1>Settings</h1>
+      <div class="form-card">
+        <input placeholder="Log Channel ID">
+        <input placeholder="Staff Role ID">
+        <button>Save Settings</button>
       </div>
     </section>
+  </main>
+</div>
 
+<div id="transcriptPage" class="page transcript-page hidden">
+  <header class="transcript-head"><button onclick="showPage('dashboardPage')">← Back</button><h1># buy-spawner-burkrepman</h1></header>
+  <main class="transcript-chat">
+    <div class="message"><div class="avatar bot">T</div><div><b>Tickety <span>APP</span></b><p class="mention">@BurKrepMan, @Spawner Access</p><div class="embed blue"><h3>Ticket Created</h3><p>Welcome @BurKrepMan, thank you for reaching out to our support team!<br>Please describe your issue and we will get back to you as soon as possible.</p><div class="answers"><b>1. What is your IGN</b><span>sb_gt0lz_08_14</span><b>2. What type of spawner?</b><span>Skelly</span><b>3. How many?</b><span>64</span></div></div></div></div>
+    <div class="message"><div class="avatar pink"></div><div><b>BurKrepMan</b><p>I changed my mind sorry guys have a great day and sorry for the trouble!</p></div></div>
   </main>
 </div>
 
