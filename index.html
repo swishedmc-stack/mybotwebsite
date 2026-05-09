@@ -3,89 +3,312 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Private Bot Test</title>
+  <title>Private Bot Dashboard</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="navbar">
-    <div class="brand"><div class="logo">P</div><span>Private Bot Test</span></div>
-    <nav>
-      <a href="#features">Features</a>
-      <a href="#commands">Commands</a>
-      <a href="#security">Security</a>
-      <a href="#tickets">Tickets</a>
-    </nav>
-  </header>
 
-  <section class="hero">
-    <div>
-      <p class="badge">Private Discord Bot</p>
-      <h1>Manage your server with tickets, security, giveaways, and applications.</h1>
-      <p class="subtext">A Discord-style bot website for a private server management bot.</p>
-      <div class="buttons">
-        <a class="btn primary" href="#">Invite Bot</a>
-        <a class="btn secondary" href="#">Support Server</a>
+  <div id="loginPage" class="login-page">
+    <div class="oauth-card">
+      <div class="oauth-icons">
+        <div class="app-logo">T</div>
+        <div class="dots">•••</div>
+        <div class="user-logo"></div>
+      </div>
+
+      <h1>Private Bot Dashboard</h1>
+      <p>wants to access your Discord account</p>
+      <p class="signed">Signed in as <b>swish</b>. <span>Not you?</span></p>
+
+      <div class="permissions">
+        <p>This will allow the dashboard to:</p>
+        <div>✅ Access your username, avatar, and banner</div>
+        <div>✅ Know what servers you're in</div>
+        <div>✅ Manage access to bot commands in a server</div>
+        <div class="muted">✖ Solve a mystery with Scooby and the gang</div>
+        <hr>
+        <small>Frontend mockup. Real login needs a backend + Discord OAuth.</small>
+      </div>
+
+      <div class="oauth-actions">
+        <button class="secondary">Cancel</button>
+        <button class="primary" onclick="showPage('serversPage')">Authorize</button>
       </div>
     </div>
+  </div>
 
-    <div class="bot-card">
-      <div class="bot-top">
-        <div class="bot-avatar">🤖</div>
-        <div>
-          <h3>Private Bot Test</h3>
-          <p>Online • Ready</p>
+  <div id="serversPage" class="servers-page hidden">
+    <header class="topbar">
+      <div class="brand">
+        <div class="app-logo small">T</div>
+        <span>PRIVATE DASHBOARD</span>
+      </div>
+      <div class="profile">🔔 <div class="avatar"></div></div>
+    </header>
+
+    <main class="servers-wrap">
+      <h1>Select a Server</h1>
+      <p class="muted">Manage servers where the bot is installed or invite it to new servers.</p>
+
+      <div class="server-grid">
+        <div class="server-card">
+          <div class="server-icon donut">🍩</div>
+          <h3>3300 SKELLYS + 1B - Caverns Archive</h3>
+          <button onclick="showPage('dashboardPage')">Manage</button>
+        </div>
+
+        <div class="server-card">
+          <div class="server-icon">🤖</div>
+          <h3>Darky's Bot Service</h3>
+          <button onclick="showPage('dashboardPage')">Manage</button>
+        </div>
+
+        <div class="server-card">
+          <div class="server-icon">🎮</div>
+          <h3>ddlocks dugout</h3>
+          <button onclick="showPage('dashboardPage')">Manage</button>
+        </div>
+
+        <div class="server-card">
+          <div class="server-icon">🎧</div>
+          <h3>! swish 🎄's server</h3>
+          <button class="invite">Invite</button>
+        </div>
+
+        <div class="server-card">
+          <div class="server-icon">⚡</div>
+          <h3>Future Talent</h3>
+          <button class="invite">Invite</button>
+        </div>
+
+        <div class="server-card">
+          <div class="server-icon">💬</div>
+          <h3>NAC Opens</h3>
+          <button class="invite">Invite</button>
         </div>
       </div>
-      <div class="status-row"><span>Tickets</span><strong>Active</strong></div>
-      <div class="status-row"><span>Security</span><strong>Enabled</strong></div>
-      <div class="status-row"><span>Giveaways</span><strong>Ready</strong></div>
-      <div class="status-row"><span>Applications</span><strong>Open</strong></div>
-    </div>
-  </section>
+    </main>
+  </div>
 
-  <section id="features" class="section">
-    <h2>Features</h2>
-    <p class="section-sub">Everything your Discord server needs in one private bot.</p>
-    <div class="grid">
-      <div class="card"><h3>🎟️ Ticket Panel</h3><p>Create support tickets with buttons and private staff channels.</p></div>
-      <div class="card"><h3>🛡️ Security</h3><p>Protect your server with anti-spam, anti-raid, filters, and logs.</p></div>
-      <div class="card"><h3>🎉 Giveaways</h3><p>Start giveaways, pick winners, end early, and reroll winners.</p></div>
-      <div class="card"><h3>📝 Applications</h3><p>Let members apply using forms and staff review buttons.</p></div>
-      <div class="card"><h3>🔨 Moderation</h3><p>Timeout, ban, kick, warn, clear messages, lock channels, and more.</p></div>
-      <div class="card"><h3>📊 Utility</h3><p>Helpful tools like server info, user info, command list, and logs.</p></div>
-    </div>
-  </section>
+  <div id="dashboardPage" class="dashboard-page hidden">
+    <header class="topbar dash-top">
+      <div class="brand">
+        <div class="app-logo small">T</div>
+        <span>PRIVATE DASHBOARD</span>
+      </div>
+      <div class="profile">
+        🔔
+        <div class="avatar"></div>
+        <button onclick="showPage('serversPage')" class="back">Switch</button>
+      </div>
+    </header>
 
-  <section id="commands" class="section split">
-    <div>
-      <h2>Commands</h2>
-      <p class="section-sub">Simple slash commands for server management.</p>
-    </div>
-    <div class="command-box">
-      <div><code>/ticket setup</code><span>Create a ticket panel.</span></div>
-      <div><code>/giveaway start</code><span>Start a giveaway.</span></div>
-      <div><code>/apply setup</code><span>Create an application panel.</span></div>
-      <div><code>/security setup</code><span>Configure security tools.</span></div>
-      <div><code>/ban</code><span>Ban a member.</span></div>
-      <div><code>/timeout</code><span>Timeout a member.</span></div>
-      <div><code>/help</code><span>View all commands.</span></div>
-    </div>
-  </section>
+    <aside class="sidebar">
+      <div class="server-select">🍩 3300 SKELLYS + 1B ▾</div>
+      <button class="nav active" data-page="home">⌂ Home</button>
+      <button class="nav" data-page="analytics">⌁ Analytics</button>
+      <button class="nav" data-page="tickets">▣ Ticket Panels</button>
+      <button class="nav" data-page="ticketManagement">▤ Ticket Management</button>
+      <button class="nav" data-page="security">🛡 Security</button>
+      <button class="nav" data-page="giveaways">🎉 Giveaways</button>
+      <button class="nav" data-page="applications">📝 Applications</button>
+      <button class="nav" data-page="settings">⚙ Settings</button>
+    </aside>
 
-  <section id="security" class="section">
-    <h2>Security</h2>
-    <div class="wide-card">
-      <p>Keep your server safer with anti-spam, anti-links, bad word filters, raid protection, mod logs, and automatic punishments.</p>
-    </div>
-  </section>
+    <main class="dash-main">
+      <section class="dash-section active" id="home">
+        <div class="server-heading">
+          <div class="server-icon donut">🍩</div>
+          <div>
+            <span>DASHBOARD</span>
+            <h1>3300 SKELLYS + 1B - Caverns Archive</h1>
+          </div>
+        </div>
 
-  <section id="tickets" class="section">
-    <h2>Tickets</h2>
-    <div class="wide-card">
-      <p>Members can open tickets with one click. Staff can close tickets and keep support organized in private channels.</p>
-    </div>
-  </section>
+        <h2>Quick Actions</h2>
+        <div class="quick-grid">
+          <div class="quick-card">📘<h3>Documentation</h3><p>Guides and tutorials</p></div>
+          <div class="quick-card">💬<h3>Support Server</h3><p>Get help</p></div>
+          <div class="quick-card">🎛<h3>Settings</h3><p>Configure modules</p></div>
+          <div class="quick-card">📊<h3>Analytics</h3><p>View activity</p></div>
+        </div>
 
-  <footer>© 2026 Private Bot Test. Not affiliated with Discord.</footer>
+        <h2>Modules</h2>
+        <div class="module-grid">
+          <div class="module" data-go="tickets">🎟<h3>Tickets</h3><p>Create and manage ticket panels</p></div>
+          <div class="module" data-go="ticketManagement">📦<h3>Ticket Management</h3><p>Review tickets and transcripts</p></div>
+          <div class="module" data-go="applications">📝<h3>Applications</h3><p>Create application forms</p></div>
+          <div class="module" data-go="security">🛡<h3>Security</h3><p>Protect your server</p></div>
+          <div class="module" data-go="giveaways">🎉<h3>Giveaways</h3><p>Create and manage giveaways</p></div>
+          <div class="module" data-go="settings">⚙<h3>Settings</h3><p>Core configuration</p></div>
+        </div>
+      </section>
+
+      <section class="dash-section" id="tickets">
+        <h1>Ticket Panels</h1>
+        <p class="muted">Ticket panels allow users to interact with the ticket system.</p>
+
+        <button class="create-panel">Create New Panel <span>＋</span></button>
+
+        <div class="panel-list">
+          <div class="panel-head">
+            <h2>Your Ticket Panels</h2>
+            <b>7/25</b>
+          </div>
+
+          <input class="search" placeholder="Search For Panels" />
+
+          <div class="panel-row selected">
+            <div>🎁 <b>Giveaway Claim</b><small>🟢 GIVEAWAY TICKETS</small></div>
+            <span>Enabled</span><b>7</b><button>🗑</button><button>⌄</button>
+          </div>
+
+          <div class="panel-row">
+            <div>⛏ <b>Building</b><small>⚫ BASE SERVICE TICKETS</small></div>
+            <span>Enabled</span><b>15</b><button>🗑</button><button>⌄</button>
+          </div>
+
+          <div class="panel-row">
+            <div>💸 <b>Buy Spawner</b><small>🟠 SPAWNER BUY</small></div>
+            <span>Enabled</span><b>3</b><button>🗑</button><button>⌄</button>
+          </div>
+
+          <div class="panel-row">
+            <div>💵 <b>Sell Spawners</b><small>🟢 SPAWNER SELL</small></div>
+            <span>Enabled</span><b>13</b><button>🗑</button><button>⌄</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="dash-section" id="ticketManagement">
+        <h1>Ticket Management</h1>
+
+        <div class="ticket-preview">
+          <div class="discord-ticket">
+            <p class="mention">@BurKrepMan, @Spawner Access</p>
+            <div class="embed blue">
+              <h3>Ticket Created</h3>
+              <p>Welcome @BurKrepMan, thank you for reaching out to our support team!</p>
+              <div class="answers">
+                <b>1. What is your IGN</b><span>sb_gt0lz_08_14</span>
+                <b>2. What type of spawner?</b><span>Skelly</span>
+                <b>3. How many?</b><span>64</span>
+              </div>
+            </div>
+            <div class="ticket-buttons">
+              <button>🔒 Close</button>
+              <button>🙌 Claim</button>
+            </div>
+            <p><b>BurKrepMan</b> I changed my mind sorry guys have a great day and sorry for the trouble!</p>
+          </div>
+
+          <div class="closed-log">
+            <div class="embed cyan">
+              <h3>Ticket Closed</h3>
+              <p>@AngryCharlie131 closed a ticket.</p>
+              <b>Close Information</b>
+              <p>Ticket Name: buy-spawner-burkrepman<br>Ticket ID: bPxaEp6ryuCl6uuM7GX<br>Reason: Didn't wanna buy anymore</p>
+              <b>Creator Information</b>
+              <p>Creator: &lt;@691703621988909066&gt;<br>Creator Username: @burkrepman<br>Creator ID: 691703621988909066</p>
+              <b>Executor Information</b>
+              <p>Executor: @AngryCharlie131<br>Executor Username: @angrycharlie131_00217<br>Executor ID: 1446788478246322227</p>
+            </div>
+            <button onclick="showTranscript()">View Transcript ↗</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="dash-section" id="security">
+        <h1>Security</h1>
+        <p class="muted">Configure punishments and thresholds for each security action.</p>
+
+        <div class="security-grid">
+          <div class="security-card"><h3>Banning Members</h3><select><option>Timeout</option><option>Kick</option><option>Ban</option></select><input value="1" /><button>Save</button></div>
+          <div class="security-card"><h3>Kicking Members</h3><select><option>Timeout</option><option>Kick</option><option>Ban</option></select><input value="2" /><button>Save</button></div>
+          <div class="security-card"><h3>Deleting Roles</h3><select><option>Ban</option><option>Kick</option><option>Timeout</option></select><input value="1" /><button>Save</button></div>
+          <div class="security-card"><h3>Creating Roles</h3><select><option>Timeout</option><option>Kick</option><option>Ban</option></select><input value="3" /><button>Save</button></div>
+          <div class="security-card"><h3>Deleting Channels</h3><select><option>Ban</option><option>Kick</option><option>Timeout</option></select><input value="1" /><button>Save</button></div>
+          <div class="security-card"><h3>Adding Bots</h3><select><option>Ban</option><option>Kick</option><option>Timeout</option></select><input value="1" /><button>Save</button></div>
+          <div class="security-card"><h3>Invite Links</h3><select><option>Timeout</option><option>Kick</option><option>Ban</option></select><input value="1" /><button>Save</button></div>
+          <div class="security-card"><h3>Spam Messages</h3><select><option>Timeout</option><option>Kick</option><option>Ban</option></select><input value="6" /><button>Save</button></div>
+        </div>
+      </section>
+
+      <section class="dash-section" id="giveaways">
+        <h1>Giveaway Manager</h1>
+        <div class="form-card">
+          <input placeholder="Prize" />
+          <input placeholder="Duration, example: 1h" />
+          <input placeholder="Winners" />
+          <textarea placeholder="Description"></textarea>
+          <button>Create Giveaway</button>
+        </div>
+      </section>
+
+      <section class="dash-section" id="applications">
+        <h1>Applications</h1>
+        <div class="form-card">
+          <input placeholder="Application Name" />
+          <textarea placeholder="Questions"></textarea>
+          <button>Create Application</button>
+        </div>
+      </section>
+
+      <section class="dash-section" id="analytics">
+        <h1>Analytics</h1>
+        <div class="quick-grid">
+          <div class="quick-card"><h3>Open Tickets</h3><b>42</b></div>
+          <div class="quick-card"><h3>Closed Tickets</h3><b>918</b></div>
+          <div class="quick-card"><h3>Security Events</h3><b>17</b></div>
+          <div class="quick-card"><h3>Giveaways</h3><b>6</b></div>
+        </div>
+      </section>
+
+      <section class="dash-section" id="settings">
+        <h1>Settings</h1>
+        <div class="form-card">
+          <input placeholder="Log Channel ID" />
+          <input placeholder="Staff Role ID" />
+          <button>Save Settings</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="transcriptPage" class="transcript-page hidden">
+    <header class="transcript-head">
+      <button onclick="showPage('dashboardPage')">← Back</button>
+      <h1># buy-spawner-burkrepman</h1>
+    </header>
+
+    <main class="transcript-chat">
+      <div class="message bot-msg">
+        <div class="avatar t">T</div>
+        <div>
+          <b>Tickety <span>APP</span></b>
+          <p class="mention">@BurKrepMan, @Spawner Access</p>
+          <div class="embed blue">
+            <h3>Ticket Created</h3>
+            <p>Welcome @BurKrepMan, thank you for reaching out to our support team!<br>Please describe your issue and we will get back to you as soon as possible.</p>
+            <div class="answers">
+              <b>1. What is your IGN</b><span>sb_gt0lz_08_14</span>
+              <b>2. What type of spawner?</b><span>Skelly</span>
+              <b>3. How many?</b><span>64</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="message">
+        <div class="avatar pink"></div>
+        <div>
+          <b>BurKrepMan</b>
+          <p>I changed my mind sorry guys have a great day and sorry for the trouble!</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
