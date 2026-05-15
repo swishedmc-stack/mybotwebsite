@@ -43,12 +43,7 @@ function showDashboard() {
 }
 
 function discordLogin() {
-    const url = `https://discord.com/api/oauth2/authorize?` +
-        `client_id=${CLIENT_ID}&` +
-        `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
-        `response_type=code&` +
-        `scope=${encodeURIComponent('identify guilds')}`;
-    window.location.href = url;
+    showServerSelect();
 }
 
 async function exchangeCodeForToken(code) {
