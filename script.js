@@ -1,22 +1,18 @@
 // Discord OAuth Configuration
-const CLIENT_ID = 'YOUR_BOT_CLIENT_ID'; // Replace with your bot's client ID
+const CLIENT_ID = 'YOUR_BOT_CLIENT_ID';
 const REDIRECT_URI = `${window.location.origin}/callback`;
 const SCOPES = 'identify guilds';
-const API_BASE = 'http://localhost:5000/api'; // Change to your bot's API URL
+const API_BASE = 'http://localhost:5000/api';
 
-// State management
 let currentUser = null;
 let currentGuild = null;
 let currentTicket = null;
 let currentApp = null;
 
-// Initialize
 document.addEventListener('DOMContentLoaded', () => {
     initAuth();
     setupEventListeners();
 });
-
-// ============= AUTHENTICATION =============
 
 function initAuth() {
     const token = localStorage.getItem('discord_token');
@@ -137,16 +133,10 @@ async function loadGuildData(guildId) {
     loadSecuritySettings();
 }
 
-// ============= EVENT LISTENERS =============
-
 function setupEventListeners() {
-    // Login
     document.getElementById('discord-login')?.addEventListener('click', discordLogin);
-    
-    // Logout
     document.getElementById('logout-btn').addEventListener('click', logout);
     
-    // Navigation
     document.querySelectorAll('.nav-item').forEach(btn => {
         btn.addEventListener('click', (e) => {
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
@@ -157,55 +147,40 @@ function setupEventListeners() {
         });
     });
     
-    // Guild selector
     document.getElementById('guild-select').addEventListener('change', (e) => {
         if (e.target.value) loadGuildData(e.target.value);
     });
     
-    // Tickets
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('.ticket-item')) {
-            const ticketId = e.target.closest('.ticket-item').dataset.id;
-            showTicketDetail(ticketId);
-        }
-        if (e.target.closest('.back-btn') && currentTicket) {
-            closeTicketDetail();
+    document.getElementById('tickets-list').addEventListener('click', (e) => {
+        const ticket = e.target.closest('.ticket-item');
+        if (ticket) {
+            showTicketDetail(ticket.dataset.id);
         }
     });
     
-    // Applications
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('.app-item')) {
-            const appId = e.target.closest('.app-item').dataset.id;
-            showAppDetail(appId);
-        }
-        if (e.target.closest('.back-btn') && currentApp) {
-            closeAppDetail();
-        }
-    });
-    
-    // Close ticket
+    document.getElementById('back-to-tickets')?.addEventListener('click', closeTicketDetail);
     document.getElementById('close-ticket-btn')?.addEventListener('click', closeTicket);
-    
-    // Download transcript
     document.getElementById('download-transcript-btn')?.addEventListener('click', downloadTranscript);
     
-    // Approve/Deny app
+    document.getElementById('apps-list').addEventListener('click', (e) => {
+        const app = e.target.closest('.app-item');
+        if (app) {
+            showAppDetail(app.dataset.id);
+        }
+    });
+    
+    document.getElementById('back-to-apps')?.addEventListener('click', closeAppDetail);
     document.getElementById('approve-btn')?.addEventListener('click', approveApp);
     document.getElementById('deny-btn')?.addEventListener('click', denyApp);
     
-    // Security settings
     document.getElementById('save-raid-btn')?.addEventListener('click', saveRaidSettings);
     document.getElementById('save-account-btn')?.addEventListener('click', saveAccountSettings);
     
-    // Modal
     document.querySelector('.modal-close')?.addEventListener('click', closeModal);
     document.getElementById('modal')?.addEventListener('click', (e) => {
         if (e.target.id === 'modal') closeModal();
     });
 }
-
-// ============= UTILITIES =============
 
 function showSection(section) {
     document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
@@ -226,7 +201,7 @@ function logout() {
 function showModal(title, content) {
     const modal = document.getElementById('modal');
     const body = document.getElementById('modal-body');
-    body.innerHTML = `<h2>${title}</h2>${content}`;
+    body.innerHTML = `<h2>${title}</h2><p>${content}</p>`;
     modal.classList.remove('hidden');
 }
 
@@ -237,8 +212,6 @@ function closeModal() {
 function formatDate(timestamp) {
     return new Date(timestamp * 1000).toLocaleString();
 }
-
-// ============= TICKETS =============
 
 async function loadTickets() {
     if (!currentGuild) return;
@@ -266,7 +239,7 @@ async function loadTickets() {
                 <div class="ticket-header-item">
                     <div>
                         <h4>#${ticket.ticket_id}</h4>
-                        <p>User: <@${ticket.user_id}></p>
+                        <p>User ID: ${ticket.user_id}</p>
                     </div>
                     <span class="ticket-status ${ticket.status}">${ticket.status}</span>
                 </div>
@@ -289,7 +262,7 @@ async function showTicketDetail(ticketId) {
         const ticket = await response.json();
         
         document.getElementById('ticket-title').textContent = `#${ticket.ticket_id}`;
-        document.getElementById('ticket-user').textContent = `User: <@${ticket.user_id}>`;
+        document.getElementById('ticket-user').textContent = `User ID: ${ticket.user_id}`;
         
         const transcriptDiv = document.getElementById('ticket-transcript');
         transcriptDiv.innerHTML = `
@@ -302,7 +275,7 @@ async function showTicketDetail(ticketId) {
                     <div class="message">
                         <strong>${msg.author}</strong>
                         <p>${msg.content}</p>
-                        <small>${new Date(msg.timestamp).toLocaleTimeString()}</small>
+                        <small>${new Date(msg.timestamp * 1000).toLocaleTimeString()}</small>
                     </div>
                 `).join('')}
             </div>
@@ -354,12 +327,11 @@ async function downloadTranscript() {
         a.href = url;
         a.download = `ticket-${currentTicket}.txt`;
         a.click();
+        URL.revokeObjectURL(url);
     } catch (error) {
         console.error('Failed to download transcript:', error);
     }
 }
-
-// ============= APPLICATIONS =============
 
 async function loadApplications() {
     if (!currentGuild) return;
@@ -389,7 +361,7 @@ async function loadApplications() {
                 <div class="app-header-item">
                     <div>
                         <h4>Application #${app.app_id}</h4>
-                        <p>User: <@${app.user_id}></p>
+                        <p>User ID: ${app.user_id}</p>
                     </div>
                     <span class="app-status pending">Pending</span>
                 </div>
@@ -411,7 +383,7 @@ async function showAppDetail(appId) {
         
         const app = await response.json();
         
-        document.getElementById('app-user').textContent = `<@${app.user_id}>`;
+        document.getElementById('app-user').textContent = `User ID: ${app.user_id}`;
         document.getElementById('app-submitted').textContent = `Submitted: ${formatDate(app.submitted_at)}`;
         
         const responsesDiv = document.getElementById('app-responses');
@@ -443,14 +415,19 @@ async function approveApp() {
     try {
         await fetch(`${API_BASE}/guilds/${currentGuild}/applications/${currentApp}/approve`, {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('discord_token')}` },
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('discord_token')}`,
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({ feedback })
         });
         
+        showModal('Success', 'Application approved!');
         closeAppDetail();
         loadApplications();
     } catch (error) {
         console.error('Failed to approve application:', error);
+        showModal('Error', 'Failed to approve application');
     }
 }
 
@@ -462,24 +439,26 @@ async function denyApp() {
     try {
         await fetch(`${API_BASE}/guilds/${currentGuild}/applications/${currentApp}/deny`, {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('discord_token')}` },
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('discord_token')}`,
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({ feedback })
         });
         
+        showModal('Success', 'Application denied!');
         closeAppDetail();
         loadApplications();
     } catch (error) {
         console.error('Failed to deny application:', error);
+        showModal('Error', 'Failed to deny application');
     }
 }
-
-// ============= SECURITY =============
 
 async function loadSecuritySettings() {
     if (!currentGuild) return;
     
     try {
-        // Load security actions
         const secResponse = await fetch(`${API_BASE}/guilds/${currentGuild}/security/actions`, {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('discord_token')}` }
         });
@@ -500,7 +479,6 @@ async function loadSecuritySettings() {
             </div>
         `).join('');
         
-        // Load raid config
         const raidResponse = await fetch(`${API_BASE}/guilds/${currentGuild}/security/raid`, {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('discord_token')}` }
         });
@@ -510,7 +488,6 @@ async function loadSecuritySettings() {
         document.getElementById('raid-threshold').value = raid.join_threshold;
         document.getElementById('raid-window').value = raid.time_window;
         
-        // Load account config
         const accountResponse = await fetch(`${API_BASE}/guilds/${currentGuild}/security/account`, {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('discord_token')}` }
         });
@@ -519,7 +496,6 @@ async function loadSecuritySettings() {
         document.getElementById('account-enabled').checked = account.enabled;
         document.getElementById('account-age').value = account.min_age_days;
         
-        // Load flagged members
         const flagResponse = await fetch(`${API_BASE}/guilds/${currentGuild}/security/flags`, {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('discord_token')}` }
         });
@@ -535,7 +511,7 @@ async function loadSecuritySettings() {
         flaggedDiv.innerHTML = flagged.map(member => `
             <div class="flagged-item">
                 <div>
-                    <p><strong>User:</strong> <@${member.user_id}></p>
+                    <p><strong>User:</strong> ${member.user_id}</p>
                     <p><strong>Reason:</strong> ${member.reason}</p>
                     <p><strong>Flagged:</strong> ${formatDate(member.flagged_at)}</p>
                 </div>
