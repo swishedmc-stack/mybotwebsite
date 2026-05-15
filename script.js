@@ -1,4 +1,4 @@
-const CLIENT_ID = 'YOUR_BOT_CLIENT_ID';
+const CLIENT_ID = '1492663345612849203';
 const REDIRECT_URI = `${window.location.origin}/callback`;
 const API_BASE = 'http://localhost:5000/api';
 
