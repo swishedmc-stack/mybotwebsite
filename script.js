@@ -1,7 +1,5 @@
-// Discord OAuth Configuration
 const CLIENT_ID = 'YOUR_BOT_CLIENT_ID';
 const REDIRECT_URI = `${window.location.origin}/callback`;
-const SCOPES = 'identify guilds';
 const API_BASE = 'http://localhost:5000/api';
 
 let currentUser = null;
@@ -20,24 +18,27 @@ function initAuth() {
     if (token) {
         fetchUserData(token);
     } else {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        
-        if (code) {
-            exchangeCodeForToken(code);
-        } else {
-            showLoginPage();
-        }
+        const code = new URLSearchParams(window.location.search).get('code');
+        if (code) exchangeCodeForToken(code);
+        else showLoginPage();
     }
 }
 
 function showLoginPage() {
     document.getElementById('login-container').classList.remove('hidden');
+    document.getElementById('server-select-container').classList.add('hidden');
+    document.getElementById('dashboard-container').classList.add('hidden');
+}
+
+function showServerSelect() {
+    document.getElementById('login-container').classList.add('hidden');
+    document.getElementById('server-select-container').classList.remove('hidden');
     document.getElementById('dashboard-container').classList.add('hidden');
 }
 
 function showDashboard() {
     document.getElementById('login-container').classList.add('hidden');
+    document.getElementById('server-select-container').classList.add('hidden');
     document.getElementById('dashboard-container').classList.remove('hidden');
 }
 
@@ -46,7 +47,7 @@ function discordLogin() {
         `client_id=${CLIENT_ID}&` +
         `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
         `response_type=code&` +
-        `scope=${encodeURIComponent(SCOPES)}`;
+        `scope=${encodeURIComponent('identify guilds')}`;
     window.location.href = url;
 }
 
@@ -77,21 +78,12 @@ async function fetchUserData(token) {
         currentUser = await response.json();
         localStorage.setItem('discord_token', token);
         
-        updateUserUI();
         await loadGuilds(token);
-        showDashboard();
+        showServerSelect();
     } catch (error) {
         console.error('User fetch failed:', error);
         localStorage.removeItem('discord_token');
         showLoginPage();
-    }
-}
-
-function updateUserUI() {
-    if (currentUser) {
-        document.getElementById('user-name').textContent = currentUser.username;
-        document.getElementById('user-avatar').src = 
-            `https://cdn.discordapp.com/avatars/${currentUser.id}/${currentUser.avatar}.png`;
     }
 }
 
@@ -101,33 +93,44 @@ async function loadGuilds(token) {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         
-        if (!response.ok) throw new Error('Failed to fetch guilds');
-        
         const guilds = await response.json();
-        const select = document.getElementById('guild-select');
+        const grid = document.getElementById('servers-grid');
+        grid.innerHTML = '';
         
-        select.innerHTML = '<option value="">Select a server...</option>';
         guilds.forEach(guild => {
-            const option = document.createElement('option');
-            option.value = guild.id;
-            option.textContent = guild.name;
-            select.appendChild(option);
+            const card = document.createElement('div');
+            card.className = 'server-card';
+            card.innerHTML = `
+                <div class="server-card-banner"></div>
+                <div class="server-card-icon">${guild.name.charAt(0).toUpperCase()}</div>
+                <div class="server-card-content">
+                    <div class="server-card-name">${guild.name}</div>
+                    <div class="server-card-members">${guild.member_count || '?'} members</div>
+                    <div class="server-card-buttons">
+                        <button class="btn btn-primary manage-btn" data-guild="${guild.id}">Manage</button>
+                        <button class="btn btn-secondary">Invite</button>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
         });
-        
-        if (guilds.length > 0) {
-            select.value = guilds[0].id;
-            loadGuildData(guilds[0].id);
-        }
+
+        document.querySelectorAll('.manage-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                currentGuild = e.target.dataset.guild;
+                loadGuildDashboard();
+            });
+        });
     } catch (error) {
-        console.error('Guilds fetch failed:', error);
+        console.error('Failed to load guilds:', error);
     }
 }
 
-async function loadGuildData(guildId) {
-    currentGuild = guildId;
-    document.getElementById('guild-name').textContent = 
-        document.getElementById('guild-select').options[document.getElementById('guild-select').selectedIndex].text;
+async function loadGuildDashboard() {
+    const guildName = document.querySelector(`[data-guild="${currentGuild}"]`)?.parentElement?.querySelector('.server-card-name')?.textContent || 'Server';
+    document.getElementById('current-guild-name').textContent = guildName;
     
+    showDashboard();
     loadTickets();
     loadApplications();
     loadSecuritySettings();
@@ -135,60 +138,48 @@ async function loadGuildData(guildId) {
 
 function setupEventListeners() {
     document.getElementById('discord-login')?.addEventListener('click', discordLogin);
-    document.getElementById('logout-btn').addEventListener('click', logout);
     
-    document.querySelectorAll('.nav-item').forEach(btn => {
+    document.getElementById('logout-btn-top')?.addEventListener('click', logout);
+    document.getElementById('logout-btn-dashboard')?.addEventListener('click', logout);
+    
+    document.getElementById('back-to-servers')?.addEventListener('click', () => {
+        currentGuild = null;
+        showServerSelect();
+    });
+
+    document.querySelectorAll('.nav-link').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-            e.target.closest('.nav-item').classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+            e.currentTarget.classList.add('active');
             
-            const tab = e.target.closest('.nav-item').dataset.tab;
-            showSection(tab);
+            const section = e.currentTarget.dataset.section;
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(`${section}-section`).classList.add('active');
+            
+            if (section === 'tickets') loadTickets();
+            if (section === 'applications') loadApplications();
+            if (section === 'security') loadSecuritySettings();
         });
     });
-    
-    document.getElementById('guild-select').addEventListener('change', (e) => {
-        if (e.target.value) loadGuildData(e.target.value);
+
+    document.getElementById('tickets-list')?.addEventListener('click', (e) => {
+        const item = e.target.closest('.ticket-item');
+        if (item) showTicketDetail(item.dataset.id);
     });
-    
-    document.getElementById('tickets-list').addEventListener('click', (e) => {
-        const ticket = e.target.closest('.ticket-item');
-        if (ticket) {
-            showTicketDetail(ticket.dataset.id);
-        }
+
+    document.getElementById('applications-list')?.addEventListener('click', (e) => {
+        const item = e.target.closest('.app-item');
+        if (item) showAppDetail(item.dataset.id);
     });
-    
-    document.getElementById('back-to-tickets')?.addEventListener('click', closeTicketDetail);
-    document.getElementById('close-ticket-btn')?.addEventListener('click', closeTicket);
-    document.getElementById('download-transcript-btn')?.addEventListener('click', downloadTranscript);
-    
-    document.getElementById('apps-list').addEventListener('click', (e) => {
-        const app = e.target.closest('.app-item');
-        if (app) {
-            showAppDetail(app.dataset.id);
-        }
-    });
-    
-    document.getElementById('back-to-apps')?.addEventListener('click', closeAppDetail);
-    document.getElementById('approve-btn')?.addEventListener('click', approveApp);
-    document.getElementById('deny-btn')?.addEventListener('click', denyApp);
-    
+
+    document.getElementById('close-ticket-detail')?.addEventListener('click', closeTicketDetail);
+    document.getElementById('close-app-detail')?.addEventListener('click', closeAppDetail);
+    document.getElementById('download-btn')?.addEventListener('click', downloadTranscript);
+    document.getElementById('close-btn')?.addEventListener('click', closeTicket);
+    document.getElementById('approve-app-btn')?.addEventListener('click', approveApp);
+    document.getElementById('deny-app-btn')?.addEventListener('click', denyApp);
     document.getElementById('save-raid-btn')?.addEventListener('click', saveRaidSettings);
     document.getElementById('save-account-btn')?.addEventListener('click', saveAccountSettings);
-    
-    document.querySelector('.modal-close')?.addEventListener('click', closeModal);
-    document.getElementById('modal')?.addEventListener('click', (e) => {
-        if (e.target.id === 'modal') closeModal();
-    });
-}
-
-function showSection(section) {
-    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-    document.getElementById(`${section}-section`).classList.add('active');
-    
-    if (section === 'tickets') loadTickets();
-    if (section === 'applications') loadApplications();
-    if (section === 'security') loadSecuritySettings();
 }
 
 function logout() {
@@ -198,20 +189,11 @@ function logout() {
     showLoginPage();
 }
 
-function showModal(title, content) {
-    const modal = document.getElementById('modal');
-    const body = document.getElementById('modal-body');
-    body.innerHTML = `<h2>${title}</h2><p>${content}</p>`;
-    modal.classList.remove('hidden');
-}
-
-function closeModal() {
-    document.getElementById('modal').classList.add('hidden');
-}
-
 function formatDate(timestamp) {
     return new Date(timestamp * 1000).toLocaleString();
 }
+
+// ============= TICKETS =============
 
 async function loadTickets() {
     if (!currentGuild) return;
@@ -222,30 +204,31 @@ async function loadTickets() {
         });
         
         const data = await response.json();
-        const openTickets = data.filter(t => t.status === 'open');
-        const closedTickets = data.filter(t => t.status === 'closed');
+        const open = data.filter(t => t.status === 'open').length;
+        const closed = data.filter(t => t.status === 'closed').length;
         
-        document.getElementById('open-tickets').textContent = openTickets.length;
-        document.getElementById('closed-tickets').textContent = closedTickets.length;
+        document.getElementById('open-count').textContent = open;
+        document.getElementById('closed-count').textContent = closed;
         
         const list = document.getElementById('tickets-list');
-        if (openTickets.length === 0) {
-            list.innerHTML = '<div class="empty-state"><p>No open tickets</p></div>';
+        list.innerHTML = '';
+        
+        if (open === 0) {
+            list.innerHTML = '<div class="empty-state">No open tickets</div>';
             return;
         }
         
-        list.innerHTML = openTickets.map(ticket => `
-            <div class="ticket-item" data-id="${ticket.ticket_id}">
-                <div class="ticket-header-item">
-                    <div>
-                        <h4>#${ticket.ticket_id}</h4>
-                        <p>User ID: ${ticket.user_id}</p>
-                    </div>
-                    <span class="ticket-status ${ticket.status}">${ticket.status}</span>
-                </div>
-                <p class="ticket-time">Created: ${formatDate(ticket.created_at)}</p>
-            </div>
-        `).join('');
+        data.filter(t => t.status === 'open').forEach(ticket => {
+            const item = document.createElement('div');
+            item.className = 'ticket-item';
+            item.dataset.id = ticket.ticket_id;
+            item.innerHTML = `
+                <h4>#${ticket.ticket_id}</h4>
+                <p>User: ${ticket.user_id}</p>
+                <p>Created: ${formatDate(ticket.created_at)}</p>
+            `;
+            list.appendChild(item);
+        });
     } catch (error) {
         console.error('Failed to load tickets:', error);
     }
@@ -261,15 +244,10 @@ async function showTicketDetail(ticketId) {
         
         const ticket = await response.json();
         
-        document.getElementById('ticket-title').textContent = `#${ticket.ticket_id}`;
-        document.getElementById('ticket-user').textContent = `User ID: ${ticket.user_id}`;
+        document.getElementById('ticket-id').textContent = `#${ticket.ticket_id}`;
         
-        const transcriptDiv = document.getElementById('ticket-transcript');
-        transcriptDiv.innerHTML = `
-            <div class="transcript-header">
-                <h3>Transcript</h3>
-                <p>${formatDate(ticket.created_at)} → ${ticket.closed_at ? formatDate(ticket.closed_at) : 'Still open'}</p>
-            </div>
+        const content = document.getElementById('ticket-content');
+        content.innerHTML = `
             <div class="messages">
                 ${ticket.messages.map(msg => `
                     <div class="message">
@@ -281,7 +259,7 @@ async function showTicketDetail(ticketId) {
             </div>
         `;
         
-        document.getElementById('tickets-list').classList.add('hidden');
+        document.getElementById('tickets-list').style.display = 'none';
         document.getElementById('ticket-detail').classList.remove('hidden');
     } catch (error) {
         console.error('Failed to load ticket:', error);
@@ -290,14 +268,12 @@ async function showTicketDetail(ticketId) {
 
 function closeTicketDetail() {
     currentTicket = null;
-    document.getElementById('tickets-list').classList.remove('hidden');
+    document.getElementById('tickets-list').style.display = 'flex';
     document.getElementById('ticket-detail').classList.add('hidden');
 }
 
 async function closeTicket() {
-    if (!currentTicket || !currentGuild) return;
-    
-    if (!confirm('Close this ticket?')) return;
+    if (!currentTicket || !currentGuild || !confirm('Close this ticket?')) return;
     
     try {
         await fetch(`${API_BASE}/guilds/${currentGuild}/tickets/${currentTicket}/close`, {
@@ -333,6 +309,8 @@ async function downloadTranscript() {
     }
 }
 
+// ============= APPLICATIONS =============
+
 async function loadApplications() {
     if (!currentGuild) return;
     
@@ -342,32 +320,33 @@ async function loadApplications() {
         });
         
         const data = await response.json();
-        const pending = data.filter(a => a.status === 'pending');
-        const approved = data.filter(a => a.status === 'approved');
-        const denied = data.filter(a => a.status === 'denied');
+        const pending = data.filter(a => a.status === 'pending').length;
+        const approved = data.filter(a => a.status === 'approved').length;
+        const denied = data.filter(a => a.status === 'denied').length;
         
-        document.getElementById('pending-apps').textContent = pending.length;
-        document.getElementById('approved-apps').textContent = approved.length;
-        document.getElementById('denied-apps').textContent = denied.length;
+        document.getElementById('pending-count').textContent = pending;
+        document.getElementById('approved-count').textContent = approved;
+        document.getElementById('denied-count').textContent = denied;
         
-        const list = document.getElementById('apps-list');
-        if (pending.length === 0) {
-            list.innerHTML = '<div class="empty-state"><p>No pending applications</p></div>';
+        const list = document.getElementById('applications-list');
+        list.innerHTML = '';
+        
+        if (pending === 0) {
+            list.innerHTML = '<div class="empty-state">No pending applications</div>';
             return;
         }
         
-        list.innerHTML = pending.map(app => `
-            <div class="app-item" data-id="${app.app_id}">
-                <div class="app-header-item">
-                    <div>
-                        <h4>Application #${app.app_id}</h4>
-                        <p>User ID: ${app.user_id}</p>
-                    </div>
-                    <span class="app-status pending">Pending</span>
-                </div>
-                <p class="app-time">Submitted: ${formatDate(app.submitted_at)}</p>
-            </div>
-        `).join('');
+        data.filter(a => a.status === 'pending').forEach(app => {
+            const item = document.createElement('div');
+            item.className = 'app-item';
+            item.dataset.id = app.app_id;
+            item.innerHTML = `
+                <h4>Application #${app.app_id}</h4>
+                <p>User: ${app.user_id}</p>
+                <p>Submitted: ${formatDate(app.submitted_at)}</p>
+            `;
+            list.appendChild(item);
+        });
     } catch (error) {
         console.error('Failed to load applications:', error);
     }
@@ -383,18 +362,17 @@ async function showAppDetail(appId) {
         
         const app = await response.json();
         
-        document.getElementById('app-user').textContent = `User ID: ${app.user_id}`;
-        document.getElementById('app-submitted').textContent = `Submitted: ${formatDate(app.submitted_at)}`;
+        document.getElementById('app-user-name').textContent = `User: ${app.user_id}`;
         
-        const responsesDiv = document.getElementById('app-responses');
-        responsesDiv.innerHTML = app.responses.map(r => `
+        const content = document.getElementById('app-content');
+        content.innerHTML = app.responses.map(r => `
             <div class="response">
                 <h4>${r.question}</h4>
                 <p>${r.response}</p>
             </div>
         `).join('');
         
-        document.getElementById('apps-list').classList.add('hidden');
+        document.getElementById('applications-list').style.display = 'none';
         document.getElementById('app-detail').classList.remove('hidden');
     } catch (error) {
         console.error('Failed to load application:', error);
@@ -403,14 +381,14 @@ async function showAppDetail(appId) {
 
 function closeAppDetail() {
     currentApp = null;
-    document.getElementById('apps-list').classList.remove('hidden');
+    document.getElementById('applications-list').style.display = 'flex';
     document.getElementById('app-detail').classList.add('hidden');
 }
 
 async function approveApp() {
     if (!currentApp || !currentGuild) return;
     
-    const feedback = document.getElementById('feedback-input').value;
+    const feedback = document.getElementById('app-feedback').value;
     
     try {
         await fetch(`${API_BASE}/guilds/${currentGuild}/applications/${currentApp}/approve`, {
@@ -422,19 +400,17 @@ async function approveApp() {
             body: JSON.stringify({ feedback })
         });
         
-        showModal('Success', 'Application approved!');
         closeAppDetail();
         loadApplications();
     } catch (error) {
         console.error('Failed to approve application:', error);
-        showModal('Error', 'Failed to approve application');
     }
 }
 
 async function denyApp() {
     if (!currentApp || !currentGuild) return;
     
-    const feedback = document.getElementById('feedback-input').value;
+    const feedback = document.getElementById('app-feedback').value;
     
     try {
         await fetch(`${API_BASE}/guilds/${currentGuild}/applications/${currentApp}/deny`, {
@@ -446,78 +422,58 @@ async function denyApp() {
             body: JSON.stringify({ feedback })
         });
         
-        showModal('Success', 'Application denied!');
         closeAppDetail();
         loadApplications();
     } catch (error) {
         console.error('Failed to deny application:', error);
-        showModal('Error', 'Failed to deny application');
     }
 }
+
+// ============= SECURITY =============
 
 async function loadSecuritySettings() {
     if (!currentGuild) return;
     
     try {
-        const secResponse = await fetch(`${API_BASE}/guilds/${currentGuild}/security/actions`, {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('discord_token')}` }
-        });
-        
-        const actions = await secResponse.json();
-        const actionsList = document.getElementById('security-actions');
-        
-        actionsList.innerHTML = actions.map(action => `
-            <div class="security-item">
-                <div>
-                    <h4>${action.action}</h4>
-                    <p>${action.enabled ? '✅ Enabled' : '❌ Disabled'}</p>
-                </div>
-                <div class="security-details">
-                    <p><strong>Punishment:</strong> ${action.punishment}</p>
-                    <p><strong>Limit:</strong> ${action.limit_count}</p>
-                </div>
-            </div>
-        `).join('');
-        
         const raidResponse = await fetch(`${API_BASE}/guilds/${currentGuild}/security/raid`, {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('discord_token')}` }
         });
-        
         const raid = await raidResponse.json();
-        document.getElementById('raid-enabled').checked = raid.enabled;
+        document.getElementById('raid-toggle').checked = raid.enabled;
         document.getElementById('raid-threshold').value = raid.join_threshold;
         document.getElementById('raid-window').value = raid.time_window;
         
         const accountResponse = await fetch(`${API_BASE}/guilds/${currentGuild}/security/account`, {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('discord_token')}` }
         });
-        
         const account = await accountResponse.json();
-        document.getElementById('account-enabled').checked = account.enabled;
-        document.getElementById('account-age').value = account.min_age_days;
+        document.getElementById('account-toggle').checked = account.enabled;
+        document.getElementById('account-days').value = account.min_age_days;
         
         const flagResponse = await fetch(`${API_BASE}/guilds/${currentGuild}/security/flags`, {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('discord_token')}` }
         });
-        
         const flagged = await flagResponse.json();
-        const flaggedDiv = document.getElementById('flagged-members');
+        const list = document.getElementById('flagged-list');
+        list.innerHTML = '';
         
         if (flagged.length === 0) {
-            flaggedDiv.innerHTML = '<p>No flagged members</p>';
-            return;
+            list.innerHTML = '<div class="empty-state">No flagged members</div>';
+        } else {
+            flagged.forEach(member => {
+                const item = document.createElement('div');
+                item.className = 'flagged-item';
+                item.innerHTML = `
+                    <div>
+                        <p><strong>User:</strong> ${member.user_id}</p>
+                        <p><strong>Reason:</strong> ${member.reason}</p>
+                        <p><strong>Flagged:</strong> ${formatDate(member.flagged_at)}</p>
+                    </div>
+                    <button class="btn btn-danger" onclick="removeFlag('${currentGuild}', '${member.user_id}')">Remove</button>
+                `;
+                list.appendChild(item);
+            });
         }
-        
-        flaggedDiv.innerHTML = flagged.map(member => `
-            <div class="flagged-item">
-                <div>
-                    <p><strong>User:</strong> ${member.user_id}</p>
-                    <p><strong>Reason:</strong> ${member.reason}</p>
-                    <p><strong>Flagged:</strong> ${formatDate(member.flagged_at)}</p>
-                </div>
-                <button class="remove-flag-btn" onclick="removeFlag('${currentGuild}', '${member.user_id}')">Remove</button>
-            </div>
-        `).join('');
     } catch (error) {
         console.error('Failed to load security settings:', error);
     }
@@ -527,7 +483,7 @@ async function saveRaidSettings() {
     if (!currentGuild) return;
     
     const config = {
-        enabled: document.getElementById('raid-enabled').checked,
+        enabled: document.getElementById('raid-toggle').checked,
         join_threshold: parseInt(document.getElementById('raid-threshold').value),
         time_window: parseInt(document.getElementById('raid-window').value)
     };
@@ -541,11 +497,9 @@ async function saveRaidSettings() {
             },
             body: JSON.stringify(config)
         });
-        
-        showModal('Success', 'Raid protection settings saved!');
+        alert('Raid settings saved!');
     } catch (error) {
         console.error('Failed to save raid settings:', error);
-        showModal('Error', 'Failed to save settings');
     }
 }
 
@@ -553,8 +507,8 @@ async function saveAccountSettings() {
     if (!currentGuild) return;
     
     const config = {
-        enabled: document.getElementById('account-enabled').checked,
-        min_age_days: parseInt(document.getElementById('account-age').value)
+        enabled: document.getElementById('account-toggle').checked,
+        min_age_days: parseInt(document.getElementById('account-days').value)
     };
     
     try {
@@ -566,11 +520,9 @@ async function saveAccountSettings() {
             },
             body: JSON.stringify(config)
         });
-        
-        showModal('Success', 'Account age settings saved!');
+        alert('Account settings saved!');
     } catch (error) {
         console.error('Failed to save account settings:', error);
-        showModal('Error', 'Failed to save settings');
     }
 }
 
