@@ -41,6 +41,7 @@
                     <p class="eyebrow">Server Dashboard</p>
                     <h2 id="pageTitle">Dashboard</h2>
                 </div>
+
                 <div class="top-actions">
                     <button class="ghost-btn">Docs</button>
                     <button class="primary-btn">Invite Bot</button>
@@ -54,14 +55,34 @@
                         <h3>Manage tickets, applications, and server security in one place.</h3>
                         <p>Use the panels below to configure support workflows, staff applications, and anti-raid protection.</p>
                     </div>
+
                     <button class="primary-btn">Create Panel</button>
                 </div>
 
                 <div class="stats-grid">
-                    <div class="stat-card"><p>Open Tickets</p><h3>12</h3><span>+3 today</span></div>
-                    <div class="stat-card"><p>Pending Apps</p><h3>7</h3><span>4 waiting review</span></div>
-                    <div class="stat-card"><p>Security Blocks</p><h3>28</h3><span>Last 24 hours</span></div>
-                    <div class="stat-card"><p>Active Modules</p><h3>9</h3><span>Protection enabled</span></div>
+                    <div class="stat-card">
+                        <p>Open Tickets</p>
+                        <h3>12</h3>
+                        <span>+3 today</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <p>Pending Apps</p>
+                        <h3>7</h3>
+                        <span>4 waiting review</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <p>Security Blocks</p>
+                        <h3>28</h3>
+                        <span>Last 24 hours</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <p>Active Modules</p>
+                        <h3>9</h3>
+                        <span>Protection enabled</span>
+                    </div>
                 </div>
 
                 <div class="panel-grid">
@@ -71,12 +92,14 @@
                         <p>Create support ticket panels with custom categories, staff roles, and log channels.</p>
                         <button class="secondary-btn" data-jump="tickets">Configure Tickets</button>
                     </div>
+
                     <div class="panel-card">
                         <div class="panel-icon">📝</div>
                         <h3>Application Panel</h3>
                         <p>Build application forms, review submissions, approve users, and assign roles.</p>
                         <button class="secondary-btn" data-jump="applications">Configure Apps</button>
                     </div>
+
                     <div class="panel-card">
                         <div class="panel-icon">🛡️</div>
                         <h3>Security Panel</h3>
@@ -88,7 +111,11 @@
 
             <section id="tickets" class="page">
                 <div class="section-header">
-                    <div><h3>Ticket Panels</h3><p>Create and manage support panels for your Discord server.</p></div>
+                    <div>
+                        <h3>Ticket Panels</h3>
+                        <p>Create and manage support panels for your Discord server.</p>
+                    </div>
+
                     <button class="primary-btn">New Ticket Panel</button>
                 </div>
 
@@ -100,13 +127,27 @@
                     <textarea>Need help? Click the button below to open a ticket.</textarea>
 
                     <div class="two-col">
-                        <div><label>Ticket Category ID</label><input type="text" placeholder="Category ID" /></div>
-                        <div><label>Support Role ID</label><input type="text" placeholder="Role ID" /></div>
+                        <div>
+                            <label>Ticket Category ID</label>
+                            <input type="text" placeholder="Category ID" />
+                        </div>
+
+                        <div>
+                            <label>Support Role ID</label>
+                            <input type="text" placeholder="Role ID" />
+                        </div>
                     </div>
 
                     <div class="two-col">
-                        <div><label>Log Channel ID</label><input type="text" placeholder="Channel ID" /></div>
-                        <div><label>Button Label</label><input type="text" value="Create Ticket" /></div>
+                        <div>
+                            <label>Log Channel ID</label>
+                            <input type="text" placeholder="Channel ID" />
+                        </div>
+
+                        <div>
+                            <label>Button Label</label>
+                            <input type="text" value="Create Ticket" />
+                        </div>
                     </div>
 
                     <button class="primary-btn full">Save Ticket Panel</button>
@@ -115,7 +156,11 @@
 
             <section id="applications" class="page">
                 <div class="section-header">
-                    <div><h3>Applications</h3><p>Set up application questions and review submitted forms.</p></div>
+                    <div>
+                        <h3>Applications</h3>
+                        <p>Set up application questions and review submitted forms.</p>
+                    </div>
+
                     <button class="primary-btn">New Application</button>
                 </div>
 
@@ -127,10 +172,22 @@
                     <input type="text" placeholder="Role given after approval" />
 
                     <label>Questions</label>
+
                     <div id="questionList" class="question-list">
-                        <div class="question-row"><input value="Why do you want to join the staff team?" /><button>✕</button></div>
-                        <div class="question-row"><input value="How old are you?" /><button>✕</button></div>
-                        <div class="question-row"><input value="What experience do you have?" /><button>✕</button></div>
+                        <div class="question-row">
+                            <input value="Why do you want to join the staff team?" />
+                            <button>✕</button>
+                        </div>
+
+                        <div class="question-row">
+                            <input value="How old are you?" />
+                            <button>✕</button>
+                        </div>
+
+                        <div class="question-row">
+                            <input value="What experience do you have?" />
+                            <button>✕</button>
+                        </div>
                     </div>
 
                     <button id="addQuestion" class="secondary-btn">+ Add Question</button>
@@ -140,44 +197,65 @@
 
             <section id="security" class="page">
                 <div class="section-header">
-                    <div><h3>Security</h3><p>Configure moderation and protection modules.</p></div>
+                    <div>
+                        <h3>Security</h3>
+                        <p>Configure moderation and protection modules.</p>
+                    </div>
+
                     <button class="primary-btn">Save Security</button>
                 </div>
 
                 <div class="security-grid">
-                    <div class="security-card"><h4>Discord Links</h4><p>Block Discord invite links.</p><label class="switch"><input type="checkbox" checked><span></span></label></div>
-                    <div class="security-card"><h4>All Links</h4><p>Block all external links.</p><label class="switch"><input type="checkbox"><span></span></label></div>
-                    <div class="security-card"><h4>Mass Mentions</h4><p>Stop users from pinging too many people.</p><label class="switch"><input type="checkbox" checked><span></span></label></div>
-                    <div class="security-card"><h4>Emoji Spam</h4><p>Detect spammed emojis.</p><label class="switch"><input type="checkbox"><span></span></label></div>
-                    <div class="security-card"><h4>Caps Spam</h4><p>Detect messages with too many caps.</p><label class="switch"><input type="checkbox" checked><span></span></label></div>
-                    <div class="security-card"><h4>Raid Protection</h4><p>Lock channels during join raids.</p><label class="switch"><input type="checkbox" checked><span></span></label></div>
-                </div>
+                    <div class="security-card">
+                        <h4>Discord Links</h4>
+                        <p>Block Discord invite links.</p>
 
-                <div class="form-card">
-                    <div class="two-col">
-                        <div><label>Punishment</label><select><option>Timeout</option><option>Kick</option><option>Ban</option></select></div>
-                        <div><label>Threshold</label><input type="number" value="3" /></div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span></span>
+                        </label>
                     </div>
-                    <div class="two-col">
-                        <div><label>Timeout Duration</label><input type="text" value="10m" /></div>
-                        <div><label>Security Log Channel</label><input type="text" placeholder="Channel ID" /></div>
+
+                    <div class="security-card">
+                        <h4>All Links</h4>
+                        <p>Block all external links.</p>
+
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span></span>
+                        </label>
                     </div>
-                    <button class="primary-btn full">Update Security Settings</button>
+
+                    <div class="security-card">
+                        <h4>Mass Mentions</h4>
+                        <p>Stop users from pinging too many people.</p>
+
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span></span>
+                        </label>
+                    </div>
                 </div>
             </section>
 
             <section id="settings" class="page">
                 <div class="section-header">
-                    <div><h3>Settings</h3><p>General website and bot settings.</p></div>
+                    <div>
+                        <h3>Settings</h3>
+                        <p>General website and bot settings.</p>
+                    </div>
                 </div>
 
                 <div class="form-card">
                     <label>Server ID</label>
                     <input type="text" placeholder="Your Discord server ID" />
+
                     <label>Bot Token</label>
                     <input type="password" placeholder="Do not expose this publicly" />
+
                     <label>Brand Name</label>
                     <input type="text" value="PanelBot" />
+
                     <button class="primary-btn full">Save Settings</button>
                 </div>
             </section>
