@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="login-container" class="login-container hidden">
+    <div id="login-container" class="login-container">
         <div class="login-card">
             <div class="login-header">
                 <h1>ServerBot</h1>
@@ -91,7 +91,7 @@
 
                     <div id="ticket-detail" class="ticket-detail hidden">
                         <div class="ticket-header">
-                            <button class="back-btn">← Back</button>
+                            <button class="back-btn" id="back-to-tickets">← Back</button>
                             <div class="ticket-info">
                                 <h2 id="ticket-title"></h2>
                                 <p id="ticket-user"></p>
@@ -135,7 +135,7 @@
 
                     <div id="app-detail" class="app-detail hidden">
                         <div class="app-header">
-                            <button class="back-btn">← Back</button>
+                            <button class="back-btn" id="back-to-apps">← Back</button>
                             <div class="app-info">
                                 <h2 id="app-user"></h2>
                                 <p id="app-submitted"></p>
