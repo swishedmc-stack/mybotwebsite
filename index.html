@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- LOGIN PAGE -->
     <div id="login-container" class="login-container">
         <div class="login-card">
             <div class="login-header">
@@ -25,197 +26,178 @@
         </div>
     </div>
 
-    <div id="dashboard-container" class="dashboard hidden">
-        <nav class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <div class="logo-icon">🛡️</div>
-                    <span>ServerBot</span>
-                </div>
-                <button class="logout-btn" id="logout-btn">↪ Logout</button>
+    <!-- SERVER SELECTION SCREEN -->
+    <div id="server-select-container" class="server-select-container hidden">
+        <div class="server-select-header">
+            <div class="server-select-logo">
+                <h1>ServerBot</h1>
             </div>
-            <div class="nav-items">
-                <button class="nav-item active" data-tab="tickets">
-                    <span class="icon">🎫</span>
-                    <span>Tickets</span>
-                </button>
-                <button class="nav-item" data-tab="applications">
-                    <span class="icon">📋</span>
-                    <span>Applications</span>
-                </button>
-                <button class="nav-item" data-tab="security">
-                    <span class="icon">🔐</span>
-                    <span>Security</span>
-                </button>
+            <button class="logout-btn" id="logout-btn-top">Logout</button>
+        </div>
+
+        <div class="server-select-content">
+            <h2>Select a Server</h2>
+            <p>Choose a server to manage or add ServerBot to it</p>
+            
+            <div id="servers-grid" class="servers-grid">
+                <!-- Servers will be populated here -->
             </div>
-            <div class="sidebar-footer">
-                <div class="user-info">
-                    <img id="user-avatar" src="" alt="User" class="user-avatar">
-                    <div class="user-details">
-                        <p id="user-name">Loading...</p>
-                        <p id="guild-name">No server selected</p>
-                    </div>
-                </div>
-            </div>
-        </nav>
-
-        <main class="main-content">
-            <div class="guild-selector">
-                <select id="guild-select" class="guild-dropdown">
-                    <option value="">Select a server...</option>
-                </select>
-            </div>
-
-            <!-- TICKETS SECTION -->
-            <section id="tickets-section" class="content-section active">
-                <div class="section-header">
-                    <h1>Support Tickets</h1>
-                    <div class="header-stats">
-                        <div class="stat">
-                            <span class="stat-label">Open</span>
-                            <span class="stat-value" id="open-tickets">0</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-label">Closed</span>
-                            <span class="stat-value" id="closed-tickets">0</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tickets-container">
-                    <div class="tickets-list" id="tickets-list">
-                        <div class="empty-state">
-                            <p>No tickets yet</p>
-                        </div>
-                    </div>
-
-                    <div id="ticket-detail" class="ticket-detail hidden">
-                        <div class="ticket-header">
-                            <button class="back-btn" id="back-to-tickets">← Back</button>
-                            <div class="ticket-info">
-                                <h2 id="ticket-title"></h2>
-                                <p id="ticket-user"></p>
-                            </div>
-                            <div class="ticket-actions">
-                                <button class="action-btn close-ticket-btn" id="close-ticket-btn">Close Ticket</button>
-                                <button class="action-btn download-transcript-btn" id="download-transcript-btn">📥 Transcript</button>
-                            </div>
-                        </div>
-                        <div id="ticket-transcript" class="transcript"></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- APPLICATIONS SECTION -->
-            <section id="applications-section" class="content-section">
-                <div class="section-header">
-                    <h1>Member Applications</h1>
-                    <div class="header-stats">
-                        <div class="stat">
-                            <span class="stat-label">Pending</span>
-                            <span class="stat-value" id="pending-apps">0</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-label">Approved</span>
-                            <span class="stat-value" id="approved-apps">0</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-label">Denied</span>
-                            <span class="stat-value" id="denied-apps">0</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="applications-container">
-                    <div class="apps-list" id="apps-list">
-                        <div class="empty-state">
-                            <p>No applications to review</p>
-                        </div>
-                    </div>
-
-                    <div id="app-detail" class="app-detail hidden">
-                        <div class="app-header">
-                            <button class="back-btn" id="back-to-apps">← Back</button>
-                            <div class="app-info">
-                                <h2 id="app-user"></h2>
-                                <p id="app-submitted"></p>
-                            </div>
-                        </div>
-                        <div id="app-responses" class="app-responses"></div>
-                        <div class="app-actions">
-                            <textarea id="feedback-input" placeholder="Feedback (optional)" maxlength="500"></textarea>
-                            <div class="action-buttons">
-                                <button class="action-btn approve-btn" id="approve-btn">✅ Approve</button>
-                                <button class="action-btn deny-btn" id="deny-btn">❌ Deny</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECURITY SECTION -->
-            <section id="security-section" class="content-section">
-                <div class="section-header">
-                    <h1>Security Settings</h1>
-                </div>
-
-                <div class="security-container">
-                    <div class="security-card">
-                        <h3>🛡️ Security Actions</h3>
-                        <div id="security-actions" class="security-list">
-                            <div class="loading">Loading security settings...</div>
-                        </div>
-                    </div>
-
-                    <div class="security-card">
-                        <h3>🚨 Raid Protection</h3>
-                        <div class="raid-config">
-                            <div class="config-item">
-                                <label for="raid-enabled">Enabled</label>
-                                <input type="checkbox" id="raid-enabled" class="toggle">
-                            </div>
-                            <div class="config-item">
-                                <label for="raid-threshold">Join Threshold</label>
-                                <input type="number" id="raid-threshold" min="1" value="5">
-                            </div>
-                            <div class="config-item">
-                                <label for="raid-window">Time Window (seconds)</label>
-                                <input type="number" id="raid-window" min="10" value="60">
-                            </div>
-                            <button class="save-btn" id="save-raid-btn">Save Raid Settings</button>
-                        </div>
-                    </div>
-
-                    <div class="security-card">
-                        <h3>👶 Account Age Check</h3>
-                        <div class="account-config">
-                            <div class="config-item">
-                                <label for="account-enabled">Enabled</label>
-                                <input type="checkbox" id="account-enabled" class="toggle">
-                            </div>
-                            <div class="config-item">
-                                <label for="account-age">Minimum Account Age (days)</label>
-                                <input type="number" id="account-age" min="1" value="7">
-                            </div>
-                            <button class="save-btn" id="save-account-btn">Save Account Settings</button>
-                        </div>
-                    </div>
-
-                    <div class="security-card">
-                        <h3>⚠️ Suspicious Members</h3>
-                        <div id="flagged-members" class="flagged-list">
-                            <div class="loading">Loading flagged members...</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
+        </div>
     </div>
 
-    <div id="modal" class="modal hidden">
-        <div class="modal-content">
-            <button class="modal-close">×</button>
-            <div id="modal-body"></div>
+    <!-- MAIN DASHBOARD -->
+    <div id="dashboard-container" class="dashboard hidden">
+        <div class="dashboard-header">
+            <button class="back-to-servers-btn" id="back-to-servers">← Back to Servers</button>
+            <h2 id="current-guild-name">Loading...</h2>
+            <button class="logout-btn" id="logout-btn-dashboard">Logout</button>
+        </div>
+
+        <div class="dashboard-layout">
+            <!-- SIDEBAR -->
+            <aside class="sidebar">
+                <div class="sidebar-content">
+                    <nav class="nav-menu">
+                        <button class="nav-link active" data-section="tickets">
+                            <span class="icon">🎫</span>
+                            <span>Tickets</span>
+                        </button>
+                        <button class="nav-link" data-section="applications">
+                            <span class="icon">📋</span>
+                            <span>Applications</span>
+                        </button>
+                        <button class="nav-link" data-section="security">
+                            <span class="icon">🔐</span>
+                            <span>Security</span>
+                        </button>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <main class="main-content">
+                <!-- TICKETS SECTION -->
+                <section id="tickets-section" class="content-section active">
+                    <div class="section-header">
+                        <h1>Support Tickets</h1>
+                        <div class="stats">
+                            <div class="stat-box">
+                                <span class="label">Open</span>
+                                <span class="value" id="open-count">0</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="label">Closed</span>
+                                <span class="value" id="closed-count">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-grid">
+                        <div id="tickets-list" class="tickets-list">
+                            <!-- Tickets populated here -->
+                        </div>
+
+                        <div id="ticket-detail" class="detail-panel hidden">
+                            <div class="detail-header">
+                                <button class="close-detail" id="close-ticket-detail">✕</button>
+                                <h2 id="ticket-id"></h2>
+                            </div>
+                            <div id="ticket-content" class="detail-content"></div>
+                            <div class="detail-actions">
+                                <button class="btn btn-primary" id="download-btn">📥 Download Transcript</button>
+                                <button class="btn btn-danger" id="close-btn">Close Ticket</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- APPLICATIONS SECTION -->
+                <section id="applications-section" class="content-section">
+                    <div class="section-header">
+                        <h1>Member Applications</h1>
+                        <div class="stats">
+                            <div class="stat-box">
+                                <span class="label">Pending</span>
+                                <span class="value" id="pending-count">0</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="label">Approved</span>
+                                <span class="value" id="approved-count">0</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="label">Denied</span>
+                                <span class="value" id="denied-count">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-grid">
+                        <div id="applications-list" class="applications-list">
+                            <!-- Applications populated here -->
+                        </div>
+
+                        <div id="app-detail" class="detail-panel hidden">
+                            <div class="detail-header">
+                                <button class="close-detail" id="close-app-detail">✕</button>
+                                <h2 id="app-user-name"></h2>
+                            </div>
+                            <div id="app-content" class="detail-content"></div>
+                            <div class="detail-actions">
+                                <textarea id="app-feedback" placeholder="Feedback..." maxlength="500"></textarea>
+                                <div class="button-group">
+                                    <button class="btn btn-success" id="approve-app-btn">✅ Approve</button>
+                                    <button class="btn btn-danger" id="deny-app-btn">❌ Deny</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECURITY SECTION -->
+                <section id="security-section" class="content-section">
+                    <div class="section-header">
+                        <h1>Security Settings</h1>
+                    </div>
+
+                    <div class="security-grid">
+                        <div class="security-card">
+                            <h3>🚨 Raid Protection</h3>
+                            <div class="config-group">
+                                <label>
+                                    <input type="checkbox" id="raid-toggle" class="config-toggle">
+                                    Enable Raid Detection
+                                </label>
+                                <div class="config-inputs">
+                                    <input type="number" id="raid-threshold" placeholder="Join threshold" min="1" value="5">
+                                    <input type="number" id="raid-window" placeholder="Time window (s)" min="10" value="60">
+                                </div>
+                                <button class="btn btn-primary" id="save-raid-btn">Save</button>
+                            </div>
+                        </div>
+
+                        <div class="security-card">
+                            <h3>👶 Account Age Check</h3>
+                            <div class="config-group">
+                                <label>
+                                    <input type="checkbox" id="account-toggle" class="config-toggle">
+                                    Enable Age Verification
+                                </label>
+                                <div class="config-inputs">
+                                    <input type="number" id="account-days" placeholder="Minimum days" min="1" value="7">
+                                </div>
+                                <button class="btn btn-primary" id="save-account-btn">Save</button>
+                            </div>
+                        </div>
+
+                        <div class="security-card full-width">
+                            <h3>⚠️ Flagged Members</h3>
+                            <div id="flagged-list" class="flagged-list">
+                                <!-- Flagged members populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
         </div>
     </div>
 
