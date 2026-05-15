@@ -1,5 +1,5 @@
 const CLIENT_ID = '1492663345612849203';
-const REDIRECT_URI = `${window.location.origin}/callback`;
+const REDIRECT_URI = window.location.origin;
 const API_BASE = 'http://localhost:5000/api';
 
 let currentUser = null;
