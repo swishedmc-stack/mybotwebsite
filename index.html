@@ -3,20 +3,64 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Server Control Panel</title>
+    <title>PanelBot Dashboard</title>
     <link rel="stylesheet" href="style.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="app-shell">
+
+    <!-- LOGIN SCREEN -->
+    <section id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <div class="logo">⚡</div>
+            <h1>PanelBot</h1>
+            <p>Login with Discord to manage your server tickets, applications, and security.</p>
+            <button id="loginBtn" class="discord-btn">Login with Discord</button>
+        </div>
+    </section>
+
+    <!-- SERVER SELECT SCREEN -->
+    <section id="serverScreen" class="login-screen hidden">
+        <div class="login-card">
+            <h1>Select a Server</h1>
+            <p>Choose the Discord server you want to manage.</p>
+
+            <div class="server-list">
+                <button class="server-option" data-server="Random Code Server">
+                    <span>💬</span>
+                    <div>
+                        <strong>Random Code Server</strong>
+                        <small>Owner</small>
+                    </div>
+                </button>
+
+                <button class="server-option" data-server="Community Hub">
+                    <span>🛡️</span>
+                    <div>
+                        <strong>Community Hub</strong>
+                        <small>Administrator</small>
+                    </div>
+                </button>
+
+                <button class="server-option locked">
+                    <span>🔒</span>
+                    <div>
+                        <strong>Locked Server</strong>
+                        <small>Missing permissions</small>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <div id="dashboardApp" class="app-shell hidden">
+
         <aside class="sidebar">
             <div class="brand">
                 <div class="brand-icon">⚡</div>
                 <div>
-                    <h1>PanelBot</h1>
-                    <p>Discord control center</p>
+                    <h2>PanelBot</h2>
+                    <p id="selectedServer">No server selected</p>
                 </div>
             </div>
 
@@ -29,59 +73,48 @@
             </nav>
 
             <div class="sidebar-card">
-                <p class="small-label">Bot Status</p>
-                <h3><span class="pulse"></span> Online</h3>
-                <p>All systems are running.</p>
+                <p>Bot Status</p>
+                <h3><span class="dot"></span> Online</h3>
+                <small>Connected to Discord</small>
             </div>
         </aside>
 
         <main class="main">
             <header class="topbar">
                 <div>
-                    <p class="eyebrow">Server Dashboard</p>
-                    <h2 id="pageTitle">Dashboard</h2>
+                    <p class="eyebrow">Control Center</p>
+                    <h1 id="pageTitle">Dashboard</h1>
                 </div>
 
-                <div class="top-actions">
-                    <button class="ghost-btn">Docs</button>
-                    <button class="primary-btn">Invite Bot</button>
-                </div>
+                <button id="logoutBtn" class="ghost-btn">Logout</button>
             </header>
 
+            <!-- DASHBOARD PAGE -->
             <section id="dashboard" class="page active-page">
-                <div class="hero-card">
+                <div class="hero">
                     <div>
-                        <p class="eyebrow">Welcome Back</p>
-                        <h3>Manage tickets, applications, and server security in one place.</h3>
-                        <p>Use the panels below to configure support workflows, staff applications, and anti-raid protection.</p>
+                        <h2>Manage your server panels in one place.</h2>
+                        <p>Create ticket panels, application forms, and configure security modules.</p>
                     </div>
-
-                    <button class="primary-btn">Create Panel</button>
+                    <button class="primary-btn" data-jump="tickets">Create Panel</button>
                 </div>
 
                 <div class="stats-grid">
                     <div class="stat-card">
                         <p>Open Tickets</p>
-                        <h3>12</h3>
-                        <span>+3 today</span>
+                        <h3 id="ticketCount">3</h3>
                     </div>
-
                     <div class="stat-card">
-                        <p>Pending Apps</p>
-                        <h3>7</h3>
-                        <span>4 waiting review</span>
+                        <p>Pending Applications</p>
+                        <h3 id="appCount">2</h3>
                     </div>
-
                     <div class="stat-card">
-                        <p>Security Blocks</p>
-                        <h3>28</h3>
-                        <span>Last 24 hours</span>
+                        <p>Security Modules</p>
+                        <h3>6</h3>
                     </div>
-
                     <div class="stat-card">
-                        <p>Active Modules</p>
-                        <h3>9</h3>
-                        <span>Protection enabled</span>
+                        <p>Blocked Today</p>
+                        <h3 id="blockedCount">18</h3>
                     </div>
                 </div>
 
@@ -89,178 +122,199 @@
                     <div class="panel-card">
                         <div class="panel-icon">🎫</div>
                         <h3>Ticket Panel</h3>
-                        <p>Create support ticket panels with custom categories, staff roles, and log channels.</p>
-                        <button class="secondary-btn" data-jump="tickets">Configure Tickets</button>
+                        <p>Set up support tickets with categories, staff roles, and logs.</p>
+                        <button class="secondary-btn" data-jump="tickets">Configure</button>
                     </div>
 
                     <div class="panel-card">
                         <div class="panel-icon">📝</div>
-                        <h3>Application Panel</h3>
-                        <p>Build application forms, review submissions, approve users, and assign roles.</p>
-                        <button class="secondary-btn" data-jump="applications">Configure Apps</button>
+                        <h3>Applications</h3>
+                        <p>Create staff applications, add questions, and review users.</p>
+                        <button class="secondary-btn" data-jump="applications">Configure</button>
                     </div>
 
                     <div class="panel-card">
                         <div class="panel-icon">🛡️</div>
-                        <h3>Security Panel</h3>
-                        <p>Configure anti-spam, anti-raid, link blocking, mention protection, and punishment actions.</p>
-                        <button class="secondary-btn" data-jump="security">Configure Security</button>
+                        <h3>Security</h3>
+                        <p>Enable anti-spam, link blocking, mass mention protection, and more.</p>
+                        <button class="secondary-btn" data-jump="security">Configure</button>
                     </div>
                 </div>
             </section>
 
+            <!-- TICKETS PAGE -->
             <section id="tickets" class="page">
                 <div class="section-header">
                     <div>
-                        <h3>Ticket Panels</h3>
-                        <p>Create and manage support panels for your Discord server.</p>
+                        <h2>Ticket Panels</h2>
+                        <p>Create a support panel for your server.</p>
                     </div>
-
-                    <button class="primary-btn">New Ticket Panel</button>
+                    <button id="saveTicketBtn" class="primary-btn">Save Ticket Panel</button>
                 </div>
 
                 <div class="form-card">
                     <label>Panel Title</label>
-                    <input type="text" value="Support Tickets" />
+                    <input id="ticketTitle" value="Support Tickets" />
 
                     <label>Panel Description</label>
-                    <textarea>Need help? Click the button below to open a ticket.</textarea>
+                    <textarea id="ticketDesc">Need help? Click the button below to open a ticket.</textarea>
 
                     <div class="two-col">
                         <div>
-                            <label>Ticket Category ID</label>
-                            <input type="text" placeholder="Category ID" />
+                            <label>Category ID</label>
+                            <input id="ticketCategory" placeholder="Ticket category ID" />
                         </div>
-
                         <div>
                             <label>Support Role ID</label>
-                            <input type="text" placeholder="Role ID" />
+                            <input id="supportRole" placeholder="Support role ID" />
                         </div>
                     </div>
 
                     <div class="two-col">
                         <div>
                             <label>Log Channel ID</label>
-                            <input type="text" placeholder="Channel ID" />
+                            <input id="ticketLogs" placeholder="Log channel ID" />
                         </div>
-
                         <div>
                             <label>Button Label</label>
-                            <input type="text" value="Create Ticket" />
+                            <input id="ticketButton" value="Create Ticket" />
                         </div>
                     </div>
+                </div>
 
-                    <button class="primary-btn full">Save Ticket Panel</button>
+                <div class="preview-card">
+                    <h3>Preview</h3>
+                    <div class="discord-preview">
+                        <h4 id="previewTicketTitle">Support Tickets</h4>
+                        <p id="previewTicketDesc">Need help? Click the button below to open a ticket.</p>
+                        <button id="previewTicketButton">Create Ticket</button>
+                    </div>
                 </div>
             </section>
 
+            <!-- APPLICATIONS PAGE -->
             <section id="applications" class="page">
                 <div class="section-header">
                     <div>
-                        <h3>Applications</h3>
-                        <p>Set up application questions and review submitted forms.</p>
+                        <h2>Applications</h2>
+                        <p>Build staff application forms.</p>
                     </div>
-
-                    <button class="primary-btn">New Application</button>
+                    <button id="saveAppBtn" class="primary-btn">Save Application</button>
                 </div>
 
                 <div class="form-card">
                     <label>Application Name</label>
-                    <input type="text" value="Staff Application" />
+                    <input id="applicationName" value="Staff Application" />
 
                     <label>Approved Role ID</label>
-                    <input type="text" placeholder="Role given after approval" />
+                    <input id="approvedRole" placeholder="Role ID given after approval" />
 
                     <label>Questions</label>
-
                     <div id="questionList" class="question-list">
                         <div class="question-row">
                             <input value="Why do you want to join the staff team?" />
-                            <button>✕</button>
+                            <button type="button">✕</button>
                         </div>
-
                         <div class="question-row">
                             <input value="How old are you?" />
-                            <button>✕</button>
-                        </div>
-
-                        <div class="question-row">
-                            <input value="What experience do you have?" />
-                            <button>✕</button>
+                            <button type="button">✕</button>
                         </div>
                     </div>
 
-                    <button id="addQuestion" class="secondary-btn">+ Add Question</button>
-                    <button class="primary-btn full">Save Application Panel</button>
+                    <button id="addQuestionBtn" class="secondary-btn" type="button">+ Add Question</button>
+                </div>
+
+                <div class="table-card">
+                    <h3>Pending Applications</h3>
+                    <div class="app-row">
+                        <span>David</span>
+                        <span>Staff Application</span>
+                        <button class="approve-btn">Approve</button>
+                        <button class="deny-btn">Deny</button>
+                    </div>
+                    <div class="app-row">
+                        <span>TestUser</span>
+                        <span>Moderator Application</span>
+                        <button class="approve-btn">Approve</button>
+                        <button class="deny-btn">Deny</button>
+                    </div>
                 </div>
             </section>
 
+            <!-- SECURITY PAGE -->
             <section id="security" class="page">
                 <div class="section-header">
                     <div>
-                        <h3>Security</h3>
-                        <p>Configure moderation and protection modules.</p>
+                        <h2>Security</h2>
+                        <p>Configure moderation protection.</p>
                     </div>
-
-                    <button class="primary-btn">Save Security</button>
+                    <button id="saveSecurityBtn" class="primary-btn">Save Security</button>
                 </div>
 
                 <div class="security-grid">
                     <div class="security-card">
-                        <h4>Discord Links</h4>
-                        <p>Block Discord invite links.</p>
-
-                        <label class="switch">
-                            <input type="checkbox" checked>
-                            <span></span>
-                        </label>
+                        <h3>Discord Links</h3>
+                        <p>Block invite links.</p>
+                        <label class="switch"><input type="checkbox" checked><span></span></label>
                     </div>
 
                     <div class="security-card">
-                        <h4>All Links</h4>
-                        <p>Block all external links.</p>
-
-                        <label class="switch">
-                            <input type="checkbox">
-                            <span></span>
-                        </label>
+                        <h3>All Links</h3>
+                        <p>Block all URLs.</p>
+                        <label class="switch"><input type="checkbox"><span></span></label>
                     </div>
 
                     <div class="security-card">
-                        <h4>Mass Mentions</h4>
-                        <p>Stop users from pinging too many people.</p>
+                        <h3>Mass Mentions</h3>
+                        <p>Stop mass pinging.</p>
+                        <label class="switch"><input type="checkbox" checked><span></span></label>
+                    </div>
 
-                        <label class="switch">
-                            <input type="checkbox" checked>
-                            <span></span>
-                        </label>
+                    <div class="security-card">
+                        <h3>Caps Spam</h3>
+                        <p>Detect excessive caps.</p>
+                        <label class="switch"><input type="checkbox"><span></span></label>
+                    </div>
+
+                    <div class="security-card">
+                        <h3>Attachments</h3>
+                        <p>Block file uploads.</p>
+                        <label class="switch"><input type="checkbox"><span></span></label>
+                    </div>
+
+                    <div class="security-card">
+                        <h3>Scam Words</h3>
+                        <p>Block common scam phrases.</p>
+                        <label class="switch"><input type="checkbox" checked><span></span></label>
                     </div>
                 </div>
             </section>
 
+            <!-- SETTINGS PAGE -->
             <section id="settings" class="page">
                 <div class="section-header">
                     <div>
-                        <h3>Settings</h3>
-                        <p>General website and bot settings.</p>
+                        <h2>Settings</h2>
+                        <p>Manage basic bot settings.</p>
                     </div>
+                    <button id="saveSettingsBtn" class="primary-btn">Save Settings</button>
                 </div>
 
                 <div class="form-card">
                     <label>Server ID</label>
-                    <input type="text" placeholder="Your Discord server ID" />
+                    <input placeholder="Discord server ID" />
 
-                    <label>Bot Token</label>
-                    <input type="password" placeholder="Do not expose this publicly" />
+                    <label>Bot Client ID</label>
+                    <input placeholder="Discord bot client ID" />
 
                     <label>Brand Name</label>
-                    <input type="text" value="PanelBot" />
-
-                    <button class="primary-btn full">Save Settings</button>
+                    <input value="PanelBot" />
                 </div>
             </section>
         </main>
     </div>
+
+    <div id="toast" class="toast hidden">Saved!</div>
 
     <script src="script.js"></script>
 </body>
